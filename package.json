@@ -1,0 +1,11 @@
+{
+  "name": "ai-dev-pipeline",
+  "version": "1.0.0",
+  "description": "Jira → Figma → Code → PR, automated by Claude Code",
+  "scripts": {
+    "format": "prettier --write src/pages/*.html"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}
