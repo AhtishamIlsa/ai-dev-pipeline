@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PSCA Dev Team — Team Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #1E3A8A;
+      --blue-light: #3D74DA;
+      --green:      #10AF6F;
+      --orange:     #F49E26;
+      --bg:         #F3F4F6;
+      --white:      #FFFFFF;
+      --text-dark:  #111827;
+      --text-gray:  #6B7280;
+      --text-muted: #B1B9C3;
+      --border:     #E1E4E9;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-dark); min-width: 320px; }
+
+    nav { background: var(--blue); height: 64px; display: flex; align-items: center; padding: 0 40px; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { font-size: 20px; font-weight: 700; color: var(--white); white-space: nowrap; margin-right: auto; }
+    .nav-links { display: flex; gap: 48px; list-style: none; margin-right: 40px; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--white); text-decoration: none; opacity: 0.9; transition: opacity 0.15s; }
+    .nav-links a:hover { opacity: 1; }
+    .nav-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--white); flex-shrink: 0; }
+
+    main { max-width: 1440px; margin: 0 auto; padding: 28px 40px 40px; }
+
+    .page-header { margin-bottom: 24px; }
+    .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+    .page-header p { font-size: 14px; color: var(--text-gray); margin-top: 8px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+    .stat-card { background: var(--white); border-radius: 12px; padding: 20px 20px 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: relative; overflow: hidden; min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; }
+    .stat-card::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; border-radius: 12px 0 0 12px; }
+    .stat-card.blue::before   { background: var(--blue); }
+    .stat-card.orange::before { background: var(--orange); }
+    .stat-card.green::before  { background: var(--green); }
+    .stat-card.lblue::before  { background: var(--blue-light); }
+    .stat-value { font-size: 32px; font-weight: 700; color: var(--text-dark); line-height: 1; }
+    .stat-label { font-size: 13px; font-weight: 500; color: var(--text-gray); margin-top: 12px; }
+    .stat-sub { font-size: 12px; color: var(--text-gray); margin-top: 4px; }
+
+    .section-title { font-size: 18px; font-weight: 600; color: var(--text-dark); margin-bottom: 16px; }
+
+    .members-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 30px; margin-bottom: 36px; }
+    .member-card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 16px; }
+    .member-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--white); flex-shrink: 0; }
+    .member-info { flex: 1; min-width: 0; }
+    .member-name { font-size: 15px; font-weight: 600; color: var(--text-dark); }
+    .member-role { font-size: 13px; color: var(--text-gray); margin-top: 2px; }
+    .member-status { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12px; font-weight: 500; }
+    .member-status .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-active { color: var(--green); }
+    .status-active .dot { background: var(--green); }
+    .status-leave { color: var(--orange); }
+    .status-leave .dot { background: var(--orange); }
+    .member-tasks { font-size: 13px; color: var(--text-gray); white-space: nowrap; flex-shrink: 0; }
+
+    .activity-panel { background: var(--white); border-radius: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); overflow: hidden; }
+    .activity-item { display: flex; align-items: center; gap: 16px; padding: 16px 24px; position: relative; }
+    .activity-item + .activity-item::before { content: ''; position: absolute; top: 0; left: 24px; right: 24px; height: 1px; background: var(--border); }
+    .activity-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--white); flex-shrink: 0; }
+    .activity-text { flex: 1; font-size: 14px; font-weight: 500; color: var(--text-dark); min-width: 0; }
+    .activity-time { font-size: 12px; color: var(--text-gray); white-space: nowrap; flex-shrink: 0; }
+
+    footer { background: var(--blue); border-top: 1px solid var(--border); margin-top: 40px; }
+    .footer-inner { max-width: 1440px; margin: 0 auto; padding: 0 40px; height: 80px; display: flex; align-items: center; }
+    .footer-brand { margin-right: auto; }
+    .footer-brand strong { display: block; font-size: 14px; font-weight: 600; color: var(--white); }
+    .footer-brand span { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .footer-links { display: flex; gap: 52px; list-style: none; margin: 0 auto; }
+    .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-badge { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .sprint-badge { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 500; color: var(--white); white-space: nowrap; }
+    .footer-powered { font-size: 11px; color: var(--text-muted); }
+
+    @media (max-width: 1100px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .members-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-links { display: none; }
+    }
+    @media (max-width: 720px) {
+      main { padding: 20px 16px 32px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .members-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .footer-inner { padding: 0 16px; height: auto; padding-top: 16px; padding-bottom: 16px; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .page-header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-brand">PSCA Dev Team</span>
+    <ul class="nav-links">
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Team</a></li>
+      <li><a href="#">Reports</a></li>
+    </ul>
+    <div class="nav-avatar">AU</div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <h1>Team Dashboard</h1>
+      <p>SCRUM Sprint 1 &nbsp;·&nbsp; Overview</p>
+    </header>
+
+    <section aria-label="Sprint statistics">
+      <div class="stats-grid">
+        <div class="stat-card blue"><div class="stat-value">24</div><div><div class="stat-label">Total Tasks</div><div class="stat-sub">+3 this week</div></div></div>
+        <div class="stat-card orange"><div class="stat-value">8</div><div><div class="stat-label">In Progress</div><div class="stat-sub">3 due today</div></div></div>
+        <div class="stat-card green"><div class="stat-value">13</div><div><div class="stat-label">Completed</div><div class="stat-sub">54% completion</div></div></div>
+        <div class="stat-card lblue"><div class="stat-value">68%</div><div><div class="stat-label">Sprint Progress</div><div class="stat-sub">5 days left</div></div></div>
+      </div>
+    </section>
+
+    <section aria-label="Team members">
+      <h2 class="section-title">Team Members</h2>
+      <div class="members-grid">
+        <article class="member-card"><div class="member-avatar">AR</div><div class="member-info"><div class="member-name">Ali Raza</div><div class="member-role">Lead Developer</div><div class="member-status status-active"><span class="dot"></span> Active</div></div><div class="member-tasks">5 tasks</div></article>
+        <article class="member-card"><div class="member-avatar">SK</div><div class="member-info"><div class="member-name">Sara Khan</div><div class="member-role">UI/UX Designer</div><div class="member-status status-active"><span class="dot"></span> Active</div></div><div class="member-tasks">3 tasks</div></article>
+        <article class="member-card"><div class="member-avatar">UM</div><div class="member-info"><div class="member-name">Usman Malik</div><div class="member-role">Backend Developer</div><div class="member-status status-active"><span class="dot"></span> Active</div></div><div class="member-tasks">4 tasks</div></article>
+        <article class="member-card"><div class="member-avatar">HB</div><div class="member-info"><div class="member-name">Hira Baig</div><div class="member-role">QA Engineer</div><div class="member-status status-leave"><span class="dot"></span> On Leave</div></div><div class="member-tasks">2 tasks</div></article>
+        <article class="member-card"><div class="member-avatar">KS</div><div class="member-info"><div class="member-name">Kamran Shah</div><div class="member-role">DevOps Engineer</div><div class="member-status status-active"><span class="dot"></span> Active</div></div><div class="member-tasks">3 tasks</div></article>
+        <article class="member-card"><div class="member-avatar">NI</div><div class="member-info"><div class="member-name">Nadia Iqbal</div><div class="member-role">Frontend Developer</div><div class="member-status status-active"><span class="dot"></span> Active</div></div><div class="member-tasks">4 tasks</div></article>
+      </div>
+    </section>
+
+    <section aria-label="Recent activity">
+      <h2 class="section-title">Recent Activity</h2>
+      <div class="activity-panel">
+        <div class="activity-item"><div class="activity-avatar">AR</div><p class="activity-text"><strong>Ali Raza</strong> moved task "API Integration" to In Progress</p><span class="activity-time">2 min ago</span></div>
+        <div class="activity-item"><div class="activity-avatar">SK</div><p class="activity-text"><strong>Sara Khan</strong> uploaded new mockups for the login screen</p><span class="activity-time">18 min ago</span></div>
+        <div class="activity-item"><div class="activity-avatar">UM</div><p class="activity-text"><strong>Usman Malik</strong> closed PR #42 — Auth middleware refactor</p><span class="activity-time">1 hr ago</span></div>
+        <div class="activity-item"><div class="activity-avatar">HB</div><p class="activity-text"><strong>Hira Baig</strong> reported 3 bugs on the dashboard module</p><span class="activity-time">2 hr ago</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><strong>PSCA Dev Team</strong><span>© 2026 PSCA. All rights reserved.</span></div>
+      <ul class="footer-links">
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Team</a></li>
+        <li><a href="#">Reports</a></li>
+        <li><a href="#">Settings</a></li>
+      </ul>
+      <div class="footer-badge"><span class="sprint-badge">SCRUM Sprint 1</span><span class="footer-powered">Powered by PSCA Pipeline</span></div>
+    </div>
+  </footer>
+
+</body>
+</html>
